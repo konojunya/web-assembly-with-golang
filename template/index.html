@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script>
+    function fetchAndInstantiate(url, importObject) {
+      return fetch(url)
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => WebAssembly.instantiate(bytes, importObject))
+      .then((results) => results.instance)
+    }
+
+    var mod = fetchAndInstantiate("/wasm", {})
+    window.onload = function() {
+      mod.then((instance) => {
+        var div = document.getElementById("wasm-result")
+        div.innerHTML = "<code>add(5, 2)= " + instance.exports.add(5, 2) + "</code>";
+      })
+    }
+  </script>
+</head>
+<body>
+  <h2>webAssembly content</h2>
+  <div id="wasm-content">
+    <pre>{{.Wasm}}</pre>
+  </div>
+  <h2>WebAssembly</h2>
+  <div id="wasm-result">
+    <code>
+      add(5,2) = N/A
+    </code>
+  </div>
+</body>
+</html>
